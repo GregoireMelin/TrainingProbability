@@ -45,5 +45,5 @@ def sensor_step(mu_prior,cov_prior,measure):
 
 def motion_step(mu_prior,cov_prior,move):
     mu_post=(F*mu_prior)+move
-    cov_post=F*cov_prior*F.T
+    cov_post=F*cov_prior*F.T+R
     return [mu_post,cov_post]

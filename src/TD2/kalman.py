@@ -15,26 +15,26 @@ R = np.matrix([[1., 0., 0., 0.],
 
 # initial uncertainty
 P =  np.matrix([[5.,0.,0.,0.],
-             [0.,5.,0.,0.],
-             [0.,0.,100.,0.],
-             [0.,0.,0.,100.]]) 
+               [0.,5.,0.,0.],
+               [0.,0.,100.,0.],
+               [0.,0.,0.,100.]])
 
 # next state function
-F=  np.matrix([[0.,0.,0.,0.],
-             [0.,0.,0.,0.],
-             [0.,0.,0.,0.],
-             [0.,0.,0.,0.]]) 
+F=  np.matrix([[0.,0.,dt,0.],
+               [0.,0.,0.,dt],
+               [0.,0.,0.,0.],
+               [0.,0.,0.,0.]])
 
  # measurement function
 H =  np.matrix([[0.,0.,0.,0.],
-             [0.,0.,0.,0.]])
+                [0.,0.,0.,0.]])
 
 # measurement uncertainty
 Q =  np.matrix([[1.,0.],
-             [0.,1.]]) 
+                [0.,1.]])
 
 # identity matrix
-I =  np.eye(P.shape[0]) 
+I =  np.eye(P.shape[0])
 
 # display settings
 scale =0.2
@@ -68,6 +68,10 @@ def move(x, P):
     # TODO
     return (new_x,new_P)
 
+#def motion_step(mu_prior,cov_prior,move):
+#    mu_post=(F*mu_prior)+move
+#    cov_post=F*cov_prior*F.T+R
+#    return [mu_post,cov_post]
 
 # compute position (new_x) and uncertainty (new_P) after sensing.
 # Z: measurements
@@ -76,6 +80,16 @@ def sense(x,P,Z):
     new_P=P
     # TODO
     return (new_x,new_P)
+
+#def sensor_    #Y = measure - (H*mu_prior)
+    #S = H * cov_prior * H.T + Q
+    #K = P * H.T * np.linalg.inv(S)step(mu_prior,cov_prior,measure):
+    #Y = measure - (H*mu_prior)
+    #S = H * cov_prior * H.T + Q
+    #K = P * H.T * np.linalg.inv(S)
+    #mu_prior = mu_prior * (K.Y)
+    #cov_post = ( I - (K.H)*cov_prior)
+    #return [mu_post,cov_post]
 
 def filter(x, P, measurements):
     plt.ion()
@@ -90,7 +104,6 @@ def filter(x, P, measurements):
         p = bin_matrix(x,P)
         im = plt.imshow(p)
         plt.pause(0.1)
-
         # measurement update
         Z = np.matrix([measurements[n]]).transpose()
         (x,P) = sense(x,P,Z)
@@ -98,27 +111,25 @@ def filter(x, P, measurements):
         p = bin_matrix(x,P)
         im = plt.imshow(p)
         plt.pause(0.1)
-
     plt.ioff()
     return [x,P]
 
 def handle_test_case(measurements,initial_xy,final_position):
-    x = np.matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]]) 
+    x = np.matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]])
     res = filter(x, P,measurements)
     filtered_position   = np.array(res[0]).T[0]
     filtered_covariance = np.array(res[1])
     print "-- Estimated position   :", filtered_position
     print "-- Real position        :", final_position
-    print "-- Position error       :", np.linalg.norm(final_position-
-                                               filtered_position)
+    print "-- Position error       :", np.linalg.norm(final_position-filtered_position)
     print "-- Estimated covariance :", np.linalg.norm(filtered_covariance)
-    
+
 ################################################################
-# Test cases 
+# Test cases
 ################################################################
 print "Test case 1 (4-dimensional example, error-free measurements)"
-#u : [x,y,vx,vy]
-u = np.matrix([[0], [0], [0.], [0.]]) 
+#u : [x,y,vx,vy] : Conditions initiales en position et vitesse
+u = np.matrix([[0], [0], [0.], [0.]])
 measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
 initial_xy = [4., 12.]
 final_position = np.array([10.,0.,10.,-20.])
@@ -127,22 +138,19 @@ handle_test_case(measurements,initial_xy,final_position)
 
 ################################################################
 print "Test case 2 (4-dimensional example, errors on measurements and initial conditions)"
-#u : [x,y,vx,vy]
-u = np.matrix([[0], [0], [0.], [0.]]) 
+#u : [x,y,vx,vy]: Conditions initiales en position et vitesse
+u = np.matrix([[0], [0], [0.], [0.]])
 measurements = [[5.5, 10.], [6.5, 8.3], [7., 5.4], [6.5, 4.2], [9.3, 1.5], [10, 0.5]]
 initial_xy = [4., 11.]
 final_position = np.array([10.,0.,10.,-20.])
-#handle_test_case(measurements,initial_xy,final_position)
+handle_test_case(measurements,initial_xy,final_position)
 
 
 ##############################################################
 print "Test case 3 (4-dimensional example, errors and robot acceleration)"
-#u : [x,y,vx,vy]
-u = np.matrix([[0], [0], [0.], [0.]]) 
+#u : [x,y,vx,vy]: Conditions initiales en position et vitesse
+u = np.matrix([[0], [0], [0.], [0.]])
 measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
 initial_xy = [7., 9.]
 final_position = np.array([10,13.5,40.,-10.])
-
-#handle_test_case(measurements,initial_xy,final_position)
-
-
+handle_test_case(measurements,initial_xy,final_position)
