@@ -5,59 +5,30 @@ from matplotlib import animation
 
 # time step
 dt = 0.1
-
-
 # motion uncertainty
 R = np.matrix([[1., 0., 0., 0.],
                [0., 1., 0., 0.],
                [0., 0., 1., 0.],
                [0., 0., 0., 1.]])
-
 # initial uncertainty
 P =  np.matrix([[5.,0.,0.,0.],
-<<<<<<< HEAD
              [0.,5.,0.,0.],
              [0.,0.,100.,0.],
              [0.,0.,0.,100.]])
-
-# next state function
-
+# next state function // fonction de transition
 #QUESTION 1 : Initialisez les matrices de la fonction de transition F et de la fonction de mesure H en fonction des
 #donnees de l enonce.Que pouvez vous deduire de la matrice P, representant l incertitude au debut du test,
 #sur notre connaissance des conditions initiales ?
-
 F=  np.matrix([[1.,0.,dt,0.],
              [0.,1.,0.,dt],
              [0.,0.,1.,0.],
              [0.,0.,0.,1.]])
-
- # measurement function
+ # measurement function // fonction de mesure
 H =  np.matrix([[1.,0.,0.,0.],
              [0.,1.,0.,0.]])
-=======
-               [0.,5.,0.,0.],
-               [0.,0.,100.,0.],
-               [0.,0.,0.,100.]])
-
-# next state function
-F=  np.matrix([[0.,0.,dt,0.],
-               [0.,0.,0.,dt],
-               [0.,0.,0.,0.],
-               [0.,0.,0.,0.]])
-
- # measurement function
-H =  np.matrix([[0.,0.,0.,0.],
-                [0.,0.,0.,0.]])
->>>>>>> 39a08e6a6e9c14e26c6c4105ca11b761fd0ff1b5
-
-# measurement uncertainty11
+# measurement uncertainty
 Q =  np.matrix([[1.,0.],
-<<<<<<< HEAD
              [0.,1.]])
-=======
-                [0.,1.]])
->>>>>>> 39a08e6a6e9c14e26c6c4105ca11b761fd0ff1b5
-
 # identity matrix
 I =  np.eye(P.shape[0])
 
@@ -168,15 +139,22 @@ def handle_test_case(measurements,initial_xy,final_position):
     print "-- Position error       :", np.linalg.norm(final_position-filtered_position)
     print "-- Estimated covariance :", np.linalg.norm(filtered_covariance)
 
+def handle_test_case(measurements,initial_xy,final_position):
+    x = np.matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]])
+    res = filter(x, P,measurements)
+    filtered_position   = np.array(res[0]).T[0]
+    filtered_covariance = np.array(res[1])
+    print "-- Estimated position   :", filtered_position
+    print "-- Real position        :", final_position
+    print "-- Position error       :", np.linalg.norm(final_position-
+                                               filtered_position)
+    print "-- Estimated covariance :", np.linalg.norm(filtered_covariance)
+
 ################################################################
 # Test cases
 ################################################################
 print "Test case 1 (4-dimensional example, error-free measurements)"
-<<<<<<< HEAD
 #u : [x,y,vx,vy]
-=======
-#u : [x,y,vx,vy] : Conditions initiales en position et vitesse
->>>>>>> 39a08e6a6e9c14e26c6c4105ca11b761fd0ff1b5
 u = np.matrix([[0], [0], [0.], [0.]])
 measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
 initial_xy = [4., 12.]
@@ -186,11 +164,7 @@ handle_test_case(measurements,initial_xy,final_position)
 
 ################################################################
 print "Test case 2 (4-dimensional example, errors on measurements and initial conditions)"
-<<<<<<< HEAD
 #u : [x,y,vx,vy]
-=======
-#u : [x,y,vx,vy]: Conditions initiales en position et vitesse
->>>>>>> 39a08e6a6e9c14e26c6c4105ca11b761fd0ff1b5
 u = np.matrix([[0], [0], [0.], [0.]])
 measurements = [[5.5, 10.], [6.5, 8.3], [7., 5.4], [6.5, 4.2], [9.3, 1.5], [10, 0.5]]
 initial_xy = [4., 11.]
@@ -199,21 +173,11 @@ handle_test_case(measurements,initial_xy,final_position)
 
 
 ##############################################################
-<<<<<<< HEAD
-'''print "Test case 3 (4-dimensional example, errors and robot acceleration)"
+print "Test case 3 (4-dimensional example, errors and robot acceleration)"
 #u : [x,y,vx,vy]
 u = np.matrix([[0], [0], [0.], [0.]])
 measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
 initial_xy = [7., 9.]
-final_position = np.array([10,13.5,40.,-10.])'''
+final_position = np.array([10,13.5,40.,-10.])
 
 #handle_test_case(measurements,initial_xy,final_position)
-=======
-print "Test case 3 (4-dimensional example, errors and robot acceleration)"
-#u : [x,y,vx,vy]: Conditions initiales en position et vitesse
-u = np.matrix([[0], [0], [0.], [0.]])
-measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
-initial_xy = [7., 9.]
-final_position = np.array([10,13.5,40.,-10.])
-handle_test_case(measurements,initial_xy,final_position)
->>>>>>> 39a08e6a6e9c14e26c6c4105ca11b761fd0ff1b5
