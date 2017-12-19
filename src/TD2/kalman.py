@@ -72,18 +72,11 @@ def move(x, P):
     # L'ecart-type de la loi normale augmente (elargissement du cercle de distribution)
     # On peut donc en deduire que la precision du robot diminue puisque les valeurs sont
     # reparties de maniere moins homogene autour de la moyenne.
-
     new_x = F*new_x
     new_P = F*new_P*np.transpose(F) + R
+
     return (new_x,new_P)
 
-#def motion_step(mu_prior,cov_prior,move):
-#    mu_post=(F*mu_prior)+move
-#    cov_post=F*cov_prior*F.T+R
-#    return [mu_post,cov_post]
-
-# compute position (new_x) and uncertainty (new_P) after sensing.
-# Z: measurements
 def sense(x,P,Z):
     new_x =x
     new_P=P
@@ -95,16 +88,6 @@ def sense(x,P,Z):
     new_x = x + (K*Y)
     new_P = (np.eye(4,4) - (K*H))*P
     return (new_x,new_P)
-
-#def sensor_    #Y = measure - (H*mu_prior)
-    #S = H * cov_prior * H.T + Q
-    #K = P * H.T * np.linalg.inv(S)step(mu_prior,cov_prior,measure):
-    #Y = measure - (H*mu_prior)
-    #S = H * cov_prior * H.T + Q
-    #K = P * H.T * np.linalg.inv(S)
-    #mu_prior = mu_prior * (K.Y)
-    #cov_post = ( I - (K.H)*cov_prior)
-    #return [mu_post,cov_post]
 
 def filter(x, P, measurements):
     plt.ion()
@@ -173,11 +156,34 @@ handle_test_case(measurements,initial_xy,final_position)
 
 
 ##############################################################
-print "Test case 3 (4-dimensional example, errors and robot acceleration)"
+#print "Test case 3 (4-dimensional example, errors and robot acceleration)"
 #u : [x,y,vx,vy]
-u = np.matrix([[0], [0], [0.], [0.]])
-measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
-initial_xy = [7., 9.]
-final_position = np.array([10,13.5,40.,-10.])
+#u = np.matrix([[0], [0], [0.], [0.]])
+#measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
+#initial_xy = [7., 9.]
+#final_position = np.array([10,13.5,40.,-10.])
 
 #handle_test_case(measurements,initial_xy,final_position)
+
+
+
+# QUESTION 3 : Corrigez la fonction sense en implementant l algorithme fourni dans le cours. Lancez les tests 1 et 2,
+#vous devez voir la precision augmenter lors des premiers deplacements.
+#Comparez les erreurs de position obtenues dans les tests avec et sans erreur de mesure, que pouvez-
+#vous en deduire sur l efficacite du filtre ?
+#Que se passe-t-il si la precision du capteur GPS differe suivant les axes ?
+
+#On lance les tests 1 et 2 et on obtient les resultats suivants :
+#Test case 1 (4-dimensional example, error-free measurements)
+#-- Position error       : 4.122347013
+## Test case 2 (4-dimensional example, errors on measurements and initial conditions)
+#-- Position error       : 5.17399239095
+#On remarque que l'erreur en position augmente d'une unite en cas d erreur de mesure.
+#Le filtre est plutot efficace puisqu on abouti a une difference de 1 unite entre le cas sans erreur et le cas avec erreur.
+
+#Que se passe t il si la precision du capteur GPS differe suivant les axes ?
+#TODO
+
+
+# QUESTION 4 : Modifiez la precision du capteur, ainsi que l incertitude liee au deplacement, et comparez les a
+#l erreur sur la position finale donnee par le filtre.
