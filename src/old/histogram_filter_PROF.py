@@ -1,7 +1,7 @@
 import numpy as np
 import pylab as plt
 import time
-import random
+
 
 #retourne une distribution de probabilite uniforme p sur une grille de taille h w
 def init_positions(h,w):
@@ -12,6 +12,7 @@ def init_positions(h,w):
         for j in range(w):
             positions[i,j] = p;
     return(positions)
+
 
 
 #met a jour les probabilites de positions du robot (positions) suivant la decision de mouvement du robot (motion) et sa chance de reussir le deplacement p_move
@@ -26,55 +27,26 @@ def move(positions,motion):
             k = j-motion[1]
             if (motion[0]==0 and motion[1]==0):
                 new_positions[i,j]=positions[(l)%h,(k)%w]
+                print "lol"
             elif (l >=0 and l<h and k>=0 and k<w):
                 new_positions[i,j]=positions[(l)%h,(k)%w]*p_move
+                print "tg"
             else:
                 new_positions[i,j]=positions[(l)%h,(k)%w]*(1-p_move)
-    #print new_positions
-    return(new_positions)
+                print "man"
+        print new_positions
+        return(new_positions)
 
 
 #met a jour la mesure de probabilite de position du robot (positions) suivant la valeur mesuree par les capteurs (measurement) et la fiabilite du capteur (sensor_right)
 def sense(positions,measurement):
     (h,w) = positions.shape
     new_positions = np.zeros((h,w))
-    sum=0;
     for i in range(h):
         for j in range(w):
-            if (measurement==colors[i][j]):
-                new_positions[i,j]=positions[i,j]*sensor_right
-            else:
-                new_positions[i,j]=positions[i,j]*(1-sensor_right)
-            sum+=new_positions[i,j]
-    for i in range(h):
-        for j in range(w):
-            new_positions[i,j]=new_positions[i,j]/sum
-    print new_positions
-
+            # TODO Question 3
+            new_positions[i,j]=positions[i,j]
     return(new_positions)
-
-#QUESTION 3 : Retourne la somme des probabilites calculees par sense()
-def getSum(positions,measurement):
-    (h,w) = positions.shape
-    new_positions = np.zeros((h,w))
-    sum=0;
-    global_sum=0
-    for i in range(h):
-        for j in range(w):
-            if (measurement==colors[i][j]):
-                new_positions[i,j]=positions[i,j]*sensor_right
-            else:
-                new_positions[i,j]=positions[i,j]*(1-sensor_right)
-            sum+=new_positions[i,j]
-
-    for i in range(h):
-        for j in range(w):
-            new_positions[i,j]=new_positions[i,j]/sum
-    for i in range(h):
-        for j in range(w):
-            global_sum+=new_positions[i,j]
-
-    return(global_sum)
 
 # applique le filtre a histogramme pour chacun des mouvements du robot
 def filter(positions, motions, measurements):
@@ -83,10 +55,6 @@ def filter(positions, motions, measurements):
     for i in range(l):
         positions = move(positions,motions[i])
         positions = sense(positions,measurements[i])
-
-        #QUESTION 3 : Verifier que la sommes des probabilites des dalles est bien de 1 (decommenter les lignes suivantes)
-        #print("La somme des probabilites des dalles est de :")
-        #print getSum(positions,measurements[i])
         #affiche les probabilites de position du robot a la fin de la phase de mesure
         im = plt.imshow(positions,interpolation='nearest')
         plt.pause(1)
@@ -97,8 +65,9 @@ def filter(positions, motions, measurements):
 def handle_test_case(colors, motions, measurements):
     h = len(colors)
     w = len(colors[0])
-    positions = init_positions(h,w) #Toute la grille a une proba de 1/(h*w)
-    positions = filter(positions, motions, measurements)     #effectue la mise a jour des probabilites de position du robot
+    positions = init_positions(h,w)
+    #effectue la mise a jour des probabilites de position du robot
+    positions = filter(positions, motions, measurements)
     print positions
     ind = np.argmax(positions)
     x = ind / w
@@ -125,27 +94,12 @@ motions = [[0,0],[0,1],[1,0],[1,0],[0,1],[-1,0],[1,0],[0,0],[0,1]]
 measurements = ['green', 'red', 'green' ,'green', 'orange','green','green','orange','red']
 
 #probabilite que la mesure du senseur soit fiable
-sensor_right = 0.9
+sensor_right = 1.0
 #probabilite que le mouvement demande soit effectue
-p_move = 0.8
+p_move = 1.0
 
 handle_test_case(colors, motions, measurements)
 
-#QUESTION 2 : Pourquoi 2 couleurs ?
-#LEs deux couleurs representent differentes probabilites. Les caracteristiques
-#de couleur rouge ont en effet plus de chance d'etre occupe par le robot que LEs
-#cases de couleurs bleues.
 
-#QUESTION 3 : voir la fonction getSum()
 
-#QUESTION 4 :
-#sensor_right = 1
-#[ nan  nan  nan  nan  nan  nan  nan  nan  nan  nan]
-# [ nan  nan  nan  nan  nan  nan  nan  nan  nan  nan]
-# [ nan  nan  nan  nan  nan  nan  nan  nan  nan  nan]
-# [ nan  nan  nan  nan  nan  nan  nan  nan  nan  nan]]
-#-- Maximal probability : nan
-#-- Inferred position   : 0 , 0
-
-#On a un capteur qui ne se trompe pas du point de vue du modele (sensor_right=1). Or, on sait du fait de la structure
-#des tests que le capteur se trompe. Il detecte donc une case qui n existe pas d ou la sortie.
+
