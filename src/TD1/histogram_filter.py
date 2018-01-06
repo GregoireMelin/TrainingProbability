@@ -100,11 +100,13 @@ def handle_test_case(colors, motions, measurements):
     positions = init_positions(h,w) #Toute la grille a une proba de 1/(h*w)
     positions = filter(positions, motions, measurements)     #effectue la mise a jour des probabilites de position du robot
     print positions
+    #print getSum(positions,measurements)
     ind = np.argmax(positions)
     x = ind / w
     y = ind - w*x
     print "-- Maximal probability :", positions[x,y]
     print "-- Inferred position   :", x, ",", y
+
 
 ################################################################
 # TESTS
@@ -136,7 +138,7 @@ handle_test_case(colors, motions, measurements)
 #de couleur rouge ont en effet plus de chance d'etre occupe par le robot que LEs
 #cases de couleurs bleues.
 
-#QUESTION 3 : voir la fonction getSum()
+#QUESTION 3 : voir la fonction getSum()      [ligne 57 (Definition)]
 
 #QUESTION 4 :
 #sensor_right = 1

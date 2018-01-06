@@ -171,7 +171,6 @@ handle_test_case(measurements,initial_xy,final_position)
 #vous devez voir la precision augmenter lors des premiers deplacements.
 #Comparez les erreurs de position obtenues dans les tests avec et sans erreur de mesure, que pouvez-
 #vous en deduire sur l efficacite du filtre ?
-#Que se passe-t-il si la precision du capteur GPS differe suivant les axes ?
 
 #On lance les tests 1 et 2 et on obtient les resultats suivants :
 #Test case 1 (4-dimensional example, error-free measurements)
@@ -180,12 +179,5 @@ handle_test_case(measurements,initial_xy,final_position)
 #-- Position error       : 5.17399239095
 #On remarque que l'erreur en position augmente d'une unite en cas d erreur de mesure.
 #Le filtre est plutot efficace puisqu on abouti a une difference de 1 unite entre le cas sans erreur et le cas avec erreur.
-
-#Que se passe t il si la precision du capteur GPS differe suivant les axes ?
-#TODO
-
-
-# QUESTION 4 : Modifiez la precision du capteur, ainsi que l incertitude liee au deplacement, et comparez les a
-#l erreur sur la position finale donnee par le filtre.
-
-#TODO
+ 
+# QUESTION 4 et 5 : non comprises
