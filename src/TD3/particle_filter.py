@@ -80,9 +80,9 @@ class particle:
 
     #move
     def move(self, motion):
-        new_orientation = 0.0
-        new_x = 0.0
-        new_y = 0.0
+        new_orientation = motion[1]+np.random.normal(self.orientation,turn_noise,1)
+        new_x = motion[0]+np.random.normal(self.x,distance_noise,1)
+        new_y = motion[0]+np.random.normal(self.y,distance_noise,1)
 
         #TODO question 2
 
