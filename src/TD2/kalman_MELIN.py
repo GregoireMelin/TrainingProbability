@@ -122,16 +122,6 @@ def handle_test_case(measurements,initial_xy,final_position):
     print "-- Position error       :", np.linalg.norm(final_position-filtered_position)
     print "-- Estimated covariance :", np.linalg.norm(filtered_covariance)
 
-def handle_test_case(measurements,initial_xy,final_position):
-    x = np.matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]])
-    res = filter(x, P,measurements)
-    filtered_position   = np.array(res[0]).T[0]
-    filtered_covariance = np.array(res[1])
-    print "-- Estimated position   :", filtered_position
-    print "-- Real position        :", final_position
-    print "-- Position error       :", np.linalg.norm(final_position-
-                                               filtered_position)
-    print "-- Estimated covariance :", np.linalg.norm(filtered_covariance)
 
 ################################################################
 # Test cases
@@ -156,14 +146,14 @@ handle_test_case(measurements,initial_xy,final_position)
 
 
 ##############################################################
-#print "Test case 3 (4-dimensional example, errors and robot acceleration)"
+print "Test case 3 (4-dimensional example, errors and robot acceleration)"
 #u : [x,y,vx,vy]
-#u = np.matrix([[0], [0], [0.], [0.]])
-#measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
-#initial_xy = [7., 9.]
-#final_position = np.array([10,13.5,40.,-10.])
+u = np.matrix([[0], [0], [0.], [0.]])
+measurements = [[5., 11.], [4., 12.5], [4., 13.5], [5., 14.], [7., 14.], [10., 13.5]]
+initial_xy = [7., 9.]
+final_position = np.array([10,13.5,40.,-10.])
 
-#handle_test_case(measurements,initial_xy,final_position)
+handle_test_case(measurements,initial_xy,final_position)
 
 
 
@@ -179,5 +169,5 @@ handle_test_case(measurements,initial_xy,final_position)
 #-- Position error       : 5.17399239095
 #On remarque que l'erreur en position augmente d'une unite en cas d erreur de mesure.
 #Le filtre est plutot efficace puisqu on abouti a une difference de 1 unite entre le cas sans erreur et le cas avec erreur.
- 
+
 # QUESTION 4 et 5 : non comprises
