@@ -143,12 +143,10 @@ def resample(p,w):
     N = len(p)
     new_p = []
     #TODO question 4
-
+    # -- NORMALISATION -- #
     S=sum(w)
-    #print "Normalisation en cours"
     for i in range(len(w)): #normalisation
         w[i]/=S
-    #print "Normalisation OK"
 
     index = int(random.random() * N)
     beta = 0.0
@@ -169,19 +167,26 @@ def generate_particles(particle_number):
         new_part =particle()
         #TODO question 1
 
-    #sets a particle coordinates
-    #def set_pos(self, new_x, new_y, new_orientation):
-    #   self.x = float(new_x)
-    #   self.y = float(new_y)
-    #   self.orientation = float(new_orientation%(2.0*pi))
-    new_part.set_pos(np.random.uniform(0.0,world_size),np.random.uniform(0.0,world_size),np.random.random_sample(0.0,2*math.pi))
+        # -- INITIALISATION DES POSITIONS -- #
+        #def set_pos(self, new_x, new_y, new_orientation):
+        #   self.x = float(new_x)
+        #   self.y = float(new_y)
+        #   self.orientation = float(new_orientation%(2.0*pi))
+        new_part.set_pos(np.random.uniform(0.0,world_size),np.random.uniform(0.0,world_size),np.random.uniform(0.0,2*pi))
 
-    #sets noise parameters
-    #def set_noise(self, new_b_noise, new_t_noise, new_d_noise):
-    #    self.measure_noise  = float(new_b_noise)
-    #    self.turn_noise = float(new_t_noise)
-    #    self.distance_noise = float(new_d_noise)
+        # -- INITIALISATION DU BRUIT -- #
+        #def set_noise(self, new_b_noise, new_t_noise, new_d_noise):
+        #    self.measure_noise  = float(new_b_noise)
+        #    self.turn_noise = float(new_t_noise)
+        #    self.distance_noise = float(new_d_noise)
+        new_part.set_noise(measure_noise,turn_noise,distance_noise)
+
+        # -- AFFICHAGE -- #
+        new_part.__repr__
+
+        # -- Ajout dans l echantillon de la particule -- #
         p.append(new_part)
+
     return p
 
 
