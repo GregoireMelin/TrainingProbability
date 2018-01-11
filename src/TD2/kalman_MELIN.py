@@ -170,4 +170,23 @@ handle_test_case(measurements,initial_xy,final_position)
 #On remarque que l'erreur en position augmente d'une unite en cas d erreur de mesure.
 #Le filtre est plutot efficace puisqu on abouti a une difference de 1 unite entre le cas sans erreur et le cas avec erreur.
 
-# QUESTION 4 et 5 : non comprises
+#QUESTION 4 : La distribution liee a la position du robot lorsque l on modifie la precision de la mesure.
+#La largeur de la distribution est plus etendue. On aboutit donc a un modele moins precis pour la precision de la mesure.
+#(Idem pour l incertitude liee au deplacement) 
+#On a donc un filtre moins precis dont l erreur relatif a la position du robot augmente ( Pour le cas 1 elle est egale a 6.57150020627 et pour
+#le cas 2 elle est de 7.59741969157, en modifiant les valeurs suivantes :
+# measurement uncertainty
+#Q =  np.matrix([[2.,0.],
+ #            [0.,2.]])
+ 
+# motion uncertainty
+#R = np.matrix([[2., 0., 0., 0.],
+ #              [0., 2., 0., 0.],
+  #             [0., 0., 2., 0.],
+   #            [0., 0., 0., 2.]])
+
+#Rem. : L estimation de la position est biaisee en cas de valeurs trop petites
+
+
+#QUESTION 5 :
+#L erreur pour la cas 3 est de 5.21440234667. Compte tenu du modele, cette erreur semble coherente.
