@@ -27,14 +27,13 @@ landmarks  = [[0.0, world_size-1], [0.0, 0.0], [world_size-1, 0.0], [world_size-
 # a la position du robot dans la salle et theta son orientation.
 #Le robot se deplace dans une salle dans laquelle il y a des
 #marqueurs dont le robot peut determiner la direction.
-def mod(x,y):
-    if x<y:
-        return x
-    else:
-        return x-y
 #one of the filter s particule
+def modulo(p1,p2):
+    if p1<p2:
+        return p1
+    else:
+        return p1-p2
 class particle:
-
     # initializes location/orientation
     def __init__(self):
         self.x = 0.0
@@ -93,17 +92,17 @@ class particle:
 
     def move(self, motion):
         #TODO question 2
-        new_orientation = mod(self.orientation + np.random.normal(motion[0],self.turn_noise ),2*pi)
+        new_orientation = modulo(self.orientation + np.random.normal(motion[0],self.turn_noise ),2*pi)
         dist = np.random.normal(motion[1] , self.distance_noise)
-        new_x = mod(self.x + dist*cos(new_orientation),world_size)
-        new_y = mod(self.y + dist*sin(new_orientation),world_size)
+        new_x = modulo(self.x + dist*cos(new_orientation),world_size)
+        new_y = modulo(self.y + dist*sin(new_orientation),world_size)
         result = particle()
         result.measure_noise  = self.measure_noise
         result.turn_noise = self.turn_noise
         result.distance_noise = self.distance_noise
         result.set_pos(new_x,new_y,new_orientation)
-        return result
 
+        return result
 
     # sense:
     # La mesure nous donne l orientation des marqueurs mesurees par le robot.
@@ -116,6 +115,7 @@ class particle:
     def sense(self):
         Z = []
         for l in landmarks:
+
             landmark =np.array(l)
             position = np.array([self.x, self.y])
             # get direction vector : Permet de relier le robot au marqueur
@@ -125,34 +125,33 @@ class particle:
             if n!=0:
                 dir = dir/n
             # on calcule l angle entre l orientation du robot et celle du marqueur
-            angle = acos(np.dot(dir, [cos(self.orientation), sin(self.orientation)]))
+            a = acos(np.dot(dir, [cos(self.orientation), sin(self.orientation)]))
             if self.measure_noise != 0:
-                angle = mod(np.random.normal(angle,self.measure_noise),2*pi)
-            Z.append(angle)
+                a = modulo(np.random.normal(a,self.measure_noise),2*pi)
+            Z.append(a)
             # On peut donc a partir de cette angle permet d estimer la probabilite que le
             # robot se trouve a cette position (fonction : measurement_prob())
         return Z
-
-
 
 # extract position from the particle set
 #return the overage position and orientation of the particles
 # beware of orientation which is cyclic
 # TODO question 5
 def get_position(p):
-    mean_x = 0.0
-    mean_y = 0.0
-    mean_orientation = 0.0
+    #Calcul de la position
+    X_mean = 0.0
+    Y_mean = 0.0
+    Theta_mean = 0.0
     for pos in p:
-        mean_orientation+=pos.orientation
-        mean_x += pos.x
-        mean_y += pos.y
-    n = float(len(p))
-    mean_y /= n
-    mean_x /= n
-    mean_orientation /= n
+        Theta_mean+=pos.orientation
+        X_mean += pos.x
+        Y_mean += pos.y
+    N = float(len(p))
+    Y_mean /= N
+    X_mean /= N
+    Theta_mean /= N
 
-    return [mean_x, mean_y , mean_orientation]
+    return [X_mean, Y_mean , Theta_mean]
 
 # generates the measurements vector
 def generate_measures(motions):
@@ -193,7 +192,6 @@ def resample(p,w):
     #        beta -= w[index]
     #        index = (index + 1) % N
     #    new_p.append(p[index])
-
     # -- RWS --
     s = sum(w)
     N = len(p)
@@ -208,26 +206,7 @@ def resample(p,w):
             index = (index+1)%len(p)
             c+=w[index]
         new_p.append(p[index])
-
-
-        #Strict prorata
-    """s = sum(w)
-    for i in range(len(w)):
-        w[i] = len(p)*w[i]/s
-    i = 0
-    max = w[0]
-    pointer = 0
-    while i<len(p):
-        while i<max:
-            new_p.append(p[pointer])
-            i+=1
-        pointer+=1
-        if pointer<len(p):
-            max += w[pointer]
-    """
-
     return new_p
-
 
 # generates particle_number particles with random positions :
 #Des particules sont generees aleatoirement dans la salle.
@@ -248,7 +227,6 @@ def generate_particles(particle_number):
         new_part.set_noise(measure_noise , turn_noise, distance_noise)
         p.append(new_part)
     return p
-
 
 # randomly generates landmark_number positions on the map
 def generate_landmark(landmark_number):
@@ -289,7 +267,7 @@ def particle_filter(motions, measurements, particle_number):
         # Display particles after resampling
         pict = get_map(p)
         im = plt.imshow(pict)
-        #        plt.pause(0.1)
+        #plt.pause(0.1)
         plt.pause(1)
         #display robot position
         pict[floor(result[0]),floor(result[1])] =500
@@ -298,7 +276,6 @@ def particle_filter(motions, measurements, particle_number):
 
     plt.ioff()
     return result
-
 
 ################################################################
 print "Test case 1 (varying rotation, constant motion, four landmarks)"
@@ -312,7 +289,6 @@ print "Test case 1 (varying rotation, constant motion, four landmarks)"
 #Cas 2 : 2 iteration
 #number_of_iterations = 2
 
-
 # On s interresse au moment apres la mesure du robot.
 # La premiere iteration montre une
 # variete de particules moins importantes que pour les autres iterations du programme.
@@ -322,8 +298,6 @@ print "Test case 1 (varying rotation, constant motion, four landmarks)"
 
 # Les iterations suivantes montrent des particules qui se resserre autour du robot. La variete post-echantillonnage s explique alors
 # car on a beaucoup de position proche de la position reelle du robot.
-
-
 # -------------------------------------------------
 # TODO question 5 : voir get_position(p)
 # TODO question 6 :
